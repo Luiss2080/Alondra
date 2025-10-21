@@ -1,0 +1,242 @@
+/* Estilos básicos para páginas de autenticación */ /* Estilos básicos para Alondra - Calendario */
+
+:root {
+  :root {
+    --primary: #6a3bd6;
+    --primary: #6a3bd6;
+
+    --primary-light: #8b5cf6;
+    --bg: #f3eefe;
+
+    --secondary: #e8e2ff;
+    --muted: #777;
+
+    --background: #f3eefe;
+  }
+
+  --white: #ffffff;
+  body {
+    --text-primary: #1f2937;
+    background: var(--bg);
+
+    --text-secondary: #6b7280;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+
+    --border: #e5e7eb;
+    color: #222;
+
+    --shadow: 0 4px 20px rgba(106, 59, 214, 0.15);
+  }
+
+  --border-radius: 12px;
+  .app {
+  }
+  display: flex;
+}
+
+* {
+  .sidebar {
+    margin: 0;
+    width: 240px;
+
+    padding: 0;
+    background: #efe6ff;
+
+    box-sizing: border-box;
+    padding: 28px;
+  }
+  border-radius: 12px;
+
+  margin: 24px;
+
+  body {
+    height: calc(100vh - 48px);
+
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    position: relative;
+
+    background: linear-gradient(135deg, #e8e2ff 0%, #f0ebff 100%);
+  }
+
+  color: var(--text-primary);
+  .sidebar a {
+    line-height: 1.6;
+    display: block;
+
+    min-height: 100vh;
+    color: var(--primary);
+  }
+  padding: 10px 0;
+
+  text-decoration: none;
+
+  /* Auth Container Styles */
+}
+
+.auth-container {
+  .main {
+    max-width: 420px;
+    flex: 1;
+
+    margin: 80px auto;
+    padding: 28px;
+
+    padding: 40px;
+  }
+
+  background: var(--white);
+  .app-header {
+    border-radius: 20px;
+    background: #fff;
+
+    box-shadow: var(--shadow);
+    padding: 18px;
+
+    border: 1px solid rgba(106, 59, 214, 0.1);
+    border-radius: 12px;
+  }
+  display: flex;
+
+  justify-content: space-between;
+
+  .auth-container h2 {
+    align-items: center;
+
+    color: var(--text-primary);
+  }
+
+  font-size: 28px;
+  #calendar h3 {
+    font-weight: 700;
+    margin: 0 0 12px 0;
+
+    margin-bottom: 30px;
+  }
+
+  text-align: center;
+} /* Responsivo simple */
+
+@media (max-width: 900px) {
+  label {
+    .sidebar {
+      display: block;
+      display: none;
+
+      margin-bottom: 8px;
+    }
+
+    color: #374151;
+    .main {
+      font-weight: 600;
+      padding: 12px;
+    }
+  }
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(106, 59, 214, 0.1);
+}
+
+.btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: var(--white);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(106, 59, 214, 0.3);
+}
+
+.alert {
+  padding: 15px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.alert-error {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.alert-success {
+  background: #d1fae5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.auth-container p {
+  text-align: center;
+  margin-top: 20px;
+  color: var(--text-secondary);
+}
+
+.auth-container p a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-container p a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+.auth-footer {
+  text-align: center;
+  margin-top: 40px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .auth-container {
+    margin: 40px 20px;
+    padding: 30px 25px;
+  }
+
+  .auth-container h2 {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+
+  input[type="email"],
+  input[type="password"],
+  input[type="text"] {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .btn {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
