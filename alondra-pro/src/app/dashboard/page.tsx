@@ -37,25 +37,29 @@ export default function Dashboard() {
           
           <nav className="flex flex-col gap-3">
             {[
-              { icon: CalendarIcon, label: 'Calendario', active: true },
-              { icon: Brain, label: 'IA Planificador', active: false },
-              { icon: Activity, label: 'Rendimiento', active: false },
-              { icon: Bell, label: 'Notificaciones', active: false },
-              { icon: Settings, label: 'Ajustes', active: false }
+              { icon: CalendarIcon, label: 'Calendario', active: true, href: '/dashboard' },
+              { icon: Brain, label: 'IA Planificador', active: false, href: '/dashboard/ai-planner' },
+              { icon: Activity, label: 'Rendimiento', active: false, href: '/dashboard/performance' },
+              { icon: Bell, label: 'Notificaciones', active: false, href: '/dashboard/notifications' },
+              { icon: Settings, label: 'Ajustes', active: false, href: '/dashboard/settings' }
             ].map((item, i) => (
-              <motion.button 
+              <Link 
                 key={i}
-                whileHover={{ scale: 1.02, x: 5 }}
-                whileTap={{ scale: 0.98 }}
-                className={`flex items-center w-full gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-300 ${
-                  item.active 
-                  ? 'bg-primary/10 text-primary border border-primary/20 shadow-inner' 
-                  : 'hover:bg-white/5 text-foreground/60 hover:text-foreground border border-transparent hover:border-white/5'
-                }`}
+                href={item.href}
               >
-                <item.icon size={22} className={item.active ? 'text-primary' : 'text-foreground/50'} />
-                {item.label}
-              </motion.button>
+                <motion.div
+                  whileHover={{ scale: 1.02, x: 5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`flex items-center w-full gap-4 px-5 py-3.5 rounded-2xl font-medium transition-all duration-300 ${
+                    item.active 
+                    ? 'bg-primary/10 text-primary border border-primary/20 shadow-inner' 
+                    : 'hover:bg-white/5 text-foreground/60 hover:text-foreground border border-transparent hover:border-white/5'
+                  }`}
+                >
+                  <item.icon size={22} className={item.active ? 'text-primary' : 'text-foreground/50'} />
+                  {item.label}
+                </motion.div>
+              </Link>
             ))}
           </nav>
         </div>
