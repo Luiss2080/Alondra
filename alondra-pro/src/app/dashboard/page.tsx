@@ -80,10 +80,10 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto relative z-10 flex flex-col gap-8">
         
-        {/* Header */}
-        <header className="flex justify-between items-center bg-secondary/10 p-4 rounded-3xl border border-glass-border backdrop-blur-md">
-          <div className="flex items-center bg-background/50 border border-glass-border rounded-full px-4 py-2 w-96 transition-all focus-within:ring-2 focus-within:ring-primary/50 focus-within:w-[400px]">
-            <Search size={18} className="text-foreground/40 mr-2" />
+        {/* Cabecera del Panel Principal */}
+        <header className="flex flex-col sm:flex-row justify-between items-center bg-secondary/10 p-4 rounded-3xl border border-glass-border backdrop-blur-md gap-4">
+          <div className="flex items-center bg-background/50 border border-glass-border rounded-full px-4 py-2 w-full sm:w-96 transition-all focus-within:ring-2 focus-within:ring-primary/50">
+            <Search size={18} className="text-foreground/40 mr-2 shrink-0" />
             <input 
               type="text" 
               placeholder="Buscar eventos, exámenes..." 
@@ -91,18 +91,29 @@ export default function Dashboard() {
             />
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
+            {/* Opciones de Filtro Rápidas */}
+            <div className="flex gap-2">
+              <button className="px-4 py-1.5 rounded-full text-xs font-semibold border border-primary text-primary hover:bg-primary hover:text-white transition-colors whitespace-nowrap">
+                Todos
+              </button>
+              <button className="px-4 py-1.5 rounded-full text-xs font-semibold border border-glass-border text-foreground/70 hover:border-accent hover:text-accent transition-colors whitespace-nowrap">
+                Solo Exámenes
+              </button>
+            </div>
+
             <motion.button 
               whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(99, 102, 241, 0.4)" }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-bold rounded-full shadow-lg transition-all"
+              className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white font-bold rounded-full shadow-lg transition-all shrink-0"
             >
               <Plus size={18} />
-              Nuevo Evento
+              <span className="hidden sm:inline">Nuevo Evento</span>
             </motion.button>
 
-            <div className="flex items-center gap-3 border-l border-glass-border pl-6 cursor-pointer group">
+            {/* Perfil de Usuario Premium */}
+            <div className="flex items-center gap-3 border-l border-glass-border pl-6 cursor-pointer group shrink-0">
               <div className="text-right hidden sm:block">
                 <div className="text-sm font-bold">Estudiante</div>
                 <div className="text-xs text-foreground/50">Online</div>
@@ -114,7 +125,7 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Stats Row */}
+        {/* Tarjetas de Estadísticas (Stats Row) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             { title: 'Próximo Examen', value: 'Física', icon: Zap, color: 'text-accent' },
