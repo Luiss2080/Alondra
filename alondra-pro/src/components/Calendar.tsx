@@ -1,26 +1,36 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 interface EventType {
   id: string;
   title: string;
-  date: Date;
+  date: string | Date;
   type: 'tarea' | 'examen';
+  userId: string;
 }
 
-const mockEvents: EventType[] = [
-  { id: '1', title: 'Estudiar Álgebra', date: new Date(), type: 'tarea' },
-  { id: '2', title: 'Examen de Física', date: addDays(new Date(), 2), type: 'examen' },
-];
-
 export default function Calendar() {
-  const [events, setEvents] = useState<EventType[]>(mockEvents);
+  const [events, setEvents] = useState<EventType[]>([]);
   const startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
   
   const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(startDate, i));
+
+  useEffect(() => {
+    fetch('/api/events')
+      .then(res => res.json())
+      .then(data => {
+        // Ensure dates are parsed correctly
+        const parsedEvents = data.map((e: any) => ({
+          ...e,
+          date: new Date(e.date)
+        }));
+        setEvents(parsedEvents);
+      })
+      .catch(err => console.error("Error fetching events:", err));
+  }, []);
 
   const handleDragStart = (e: React.DragEvent, eventId: string) => {
     e.dataTransfer.setData('eventId', eventId);
@@ -30,16 +40,31 @@ export default function Calendar() {
     e.preventDefault(); // Necessary to allow dropping
   };
 
-  const handleDrop = (e: React.DragEvent, targetDate: Date) => {
+  const handleDrop = async (e: React.DragEvent, targetDate: Date) => {
     e.preventDefault();
     const eventId = e.dataTransfer.getData('eventId');
     
+    // Optimistic UI update
     setEvents(prev => prev.map(ev => 
       ev.id === eventId ? { ...ev, date: targetDate } : ev
     ));
     
-    // Aquí iría la llamada a la API (RF-1) para actualizar la BD
-    console.log(`Evento ${eventId} movido al ${format(targetDate, 'yyyy-MM-dd')}`);
+    try {
+      await fetch('/api/events', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: eventId,
+          date: targetDate,
+        }),
+      });
+      console.log(`Evento ${eventId} actualizado en BD al ${format(targetDate, 'yyyy-MM-dd')}`);
+    } catch (err) {
+      console.error("Error actualizando evento:", err);
+      // Opcional: Revertir en caso de error
+    }
   };
 
   return (
@@ -69,7 +94,7 @@ export default function Calendar() {
               {format(day, 'd')}
             </div>
             
-            {events.filter(e => isSameDay(e.date, day)).map(ev => (
+            {events.filter(e => isSameDay(new Date(e.date), day)).map(ev => (
               <div
                 key={ev.id}
                 draggable
