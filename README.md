@@ -1,84 +1,101 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/calendar-days.svg" width="100" height="100" alt="Alondra Pro Icon">
+  <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/calendar-days.svg" width="120" height="120" alt="Alondra Pro Icon">
   <h1 align="center">Alondra Pro ✨</h1>
   <p align="center">
-    <strong>Tu planificador estudiantil inteligente, impulsado por IA.</strong>
+    <strong>El ecosistema de estudio inteligente definitivo, impulsado por IA.</strong>
     <br />
-    De un prototipo escolar a una experiencia <i>SaaS Premium</i>.
+    <i>De un prototipo monolítico a una Arquitectura Empresarial Full-Stack</i>
+  </p>
+
+  <p align="center">
+    <img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js" alt="Next.js">
+    <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma" alt="Prisma">
+    <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql" alt="MySQL">
+    <img src="https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css" alt="TailwindCSS">
+    <img src="https://img.shields.io/badge/Testing-Jest-C21325?style=for-the-badge&logo=jest" alt="Jest">
   </p>
 </div>
 
 ---
 
-> **Atención:** Este repositorio ha sido actualizado radicalmente siguiendo la metodología **SDD (Spec-Driven Development)**. El proyecto monolítico original en PHP ha sido migrado a un stack moderno de vanguardia bajo el directorio `/alondra-pro`.
+> [!WARNING]
+> **Aviso Arquitectónico:** Este repositorio representa la evolución final bajo la metodología **SDD (Spec-Driven Development)**. El antiguo código en PHP (legacy) ha sido reemplazado por completo por una **SPA (Single Page Application)** alojada dentro del subdirectorio `/alondra-pro`.
 
-## 🚀 ¿Qué es Alondra Pro?
+## 🚀 La Evolución a SaaS
 
-Alondra Pro es una plataforma interactiva diseñada para revolucionar la organización académica. No es solo un calendario; es tu asistente personal de estudio que te sugiere los mejores horarios para prepararte para tus exámenes utilizando Inteligencia Artificial.
+Alondra Pro no es solo un calendario; es tu co-piloto académico. Reescrito desde cero, cuenta con una API RESTful propia conectada a una base de datos relacional robusta.
 
-### 🌟 Características Estrella
-- 🖱️ **Calendario Interactivo (Drag & Drop):** Reprograma tareas y exámenes arrastrando y soltando, sin recargar la página.
-- 🧠 **IA Planificador Integrado:** Algoritmo inteligente que sugiere sesiones de estudio basándose en tus fechas de entrega.
-- 📊 **Panel de Rendimiento (Analytics):** Gráficos interactivos y métricas para medir tu productividad.
-- 🌓 **Tema Adaptativo (Glassmorphism):** Diseño premium translúcido con alternancia dinámica entre Modo Oscuro y Claro.
-- 🧪 **Alta Fiabilidad:** Entorno protegido y testeado automatizadamente usando `Jest` y `React Testing Library`.
+### 🌟 Funcionalidades Clave
 
----
-
-## 🛠 Stack Tecnológico Moderno
-
-Nuestra arquitectura ha sido rediseñada para cumplir con estándares de la industria (Enterprise-grade):
-
-- **Framework Core:** [Next.js](https://nextjs.org/) (React) + App Router.
-- **Estilos e Interfaz:** [TailwindCSS v4](https://tailwindcss.com/) + UI en Glassmorphism.
-- **Animaciones fluidas:** [Framer Motion](https://www.framer.com/motion/).
-- **Base de Datos & ORM:** [Prisma](https://www.prisma.io/) con SQLite (Listos para escalar a PostgreSQL).
-- **QA & Testing:** Jest + React Testing Library.
+| Característica | Descripción | Estado |
+| :--- | :--- | :---: |
+| 🖱️ **Drag & Drop Real-time** | Mueve eventos libremente. Persiste en MySQL vía API `PUT` automática. | ✅ |
+| 🧠 **IA Planificador (Chat)** | Interfaz animada dedicada para recibir sugerencias automáticas de la IA. | ✅ |
+| 📊 **Dashboard de Analytics** | Panel interactivo de rendimiento (Horas de estudio, productividad). | ✅ |
+| 🌓 **Glassmorphism & Temas** | Efectos translúcidos con *Theme Toggle* (Claro/Oscuro). | ✅ |
+| 🔔 **Micro-Interacciones** | Animaciones de resorte (*Spring*) y *Toasts* flotantes vía Framer Motion. | ✅ |
 
 ---
 
-## 💻 Guía de Inicio Rápido (Local)
+## 🏗 Arquitectura del Sistema (SDD)
 
-Sigue estos pasos para arrancar el entorno de desarrollo ultra-moderno de Alondra Pro en tu máquina local.
+El flujo de datos moderno opera de la siguiente manera:
 
-### 1. Clonar e Instalar
-```bash
-# Entra a la nueva carpeta del proyecto
-cd alondra-pro
-
-# Instala todas las dependencias
-npm install
+```mermaid
+graph TD
+    A[Frontend React / Next.js] -->|Fetch / POST / PUT| B(API Routes - backend)
+    B -->|Prisma Client| C[(MySQL en Laragon)]
+    A -->|UI Animations| D[Framer Motion]
+    A -->|Testing| E[Jest & React Testing Library]
 ```
 
-### 2. Configuración de Base de Datos
-Prisma maneja todo el modelo de datos. Empuja el esquema a tu base de datos local SQLite:
+---
+
+## 💻 Guía Rápida de Despliegue (Local)
+
+Alondra Pro ahora utiliza **MySQL** como motor principal. Sigue estos pasos para arrancar el entorno en tu máquina local.
+
+### 1. Requisitos Previos
+Asegúrate de tener [Laragon](https://laragon.org/) ejecutándose con su servidor MySQL activado en el puerto `3306`.
+
+### 2. Instalación y Base de Datos
 ```bash
+# Navega al nuevo núcleo del proyecto
+cd alondra-pro
+
+# Instala las dependencias del ecosistema
+npm install
+
+# Crea la base de datos (alondra_pro) e inyecta el esquema de tablas
 npx prisma db push
 ```
 
-### 3. ¡Arrancar los Motores!
+### 3. Ejecución del Servidor
 ```bash
+# Arranca el servidor de Next.js
 npm run dev
 ```
-> 👉 Abre tu navegador en [http://localhost:3000](http://localhost:3000) y déjate sorprender por las animaciones en cascada.
+> 👉 Abre **[http://localhost:3000/dashboard](http://localhost:3000/dashboard)** para ver la magia de la UI animada y el guardado en base de datos en acción.
 
 ---
 
-## 🧪 Pruebas Unitarias
+## 🧪 Pruebas Unitarias (QA)
 
-Nos tomamos la calidad del código muy en serio. Para ejecutar los tests automáticos (UI/UX) que verifican el correcto renderizado de las nuevas pantallas:
+Para garantizar un código mantenible, Alondra Pro incluye un robusto entorno de testing. Ejecuta los tests de renderizado y componentes con:
 ```bash
 npm run test
 ```
 
 ---
 
-## 📚 Documentación Adicional
-- 📖 [Manual de Usuario Oficial](./User_Manual.md) (Ubicado en los artefactos de desarrollo)
-- 📝 [Especificación SDD y Roadmap](./implementation_plan.md)
-- 🛤️ [Registro de Cambios y Ejecución](./walkthrough.md)
+## 📚 Documentación Adjunta
+
+Hemos generado literatura oficial para acompañar el producto:
+- 📖 [Manual de Usuario Oficial](./User_Manual.md)
+- 📝 [Especificación Arquitectónica (SDD)](./implementation_plan.md)
+- 🛤️ [Bitácora de Refactorización](./walkthrough.md)
 
 ---
 <div align="center">
-  <i>Construido con 💙 para elevar la productividad de cada estudiante.</i>
+  <i>Ingeniería de software al servicio de la excelencia académica.</i>
 </div>
