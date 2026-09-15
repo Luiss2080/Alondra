@@ -1,0 +1,89 @@
+"use client";
+
+import React, { useState } from 'react';
+import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
+import { es } from 'date-fns/locale';
+
+interface EventType {
+  id: string;
+  title: string;
+  date: Date;
+  type: 'tarea' | 'examen';
+}
+
+const mockEvents: EventType[] = [
+  { id: '1', title: 'Estudiar Álgebra', date: new Date(), type: 'tarea' },
+  { id: '2', title: 'Examen de Física', date: addDays(new Date(), 2), type: 'examen' },
+];
+
+export default function Calendar() {
+  const [events, setEvents] = useState<EventType[]>(mockEvents);
+  const startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
+  
+  const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(startDate, i));
+
+  const handleDragStart = (e: React.DragEvent, eventId: string) => {
+    e.dataTransfer.setData('eventId', eventId);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault(); // Necessary to allow dropping
+  };
+
+  const handleDrop = (e: React.DragEvent, targetDate: Date) => {
+    e.preventDefault();
+    const eventId = e.dataTransfer.getData('eventId');
+    
+    setEvents(prev => prev.map(ev => 
+      ev.id === eventId ? { ...ev, date: targetDate } : ev
+    ));
+    
+    // Aquí iría la llamada a la API (RF-1) para actualizar la BD
+    console.log(`Evento ${eventId} movido al ${format(targetDate, 'yyyy-MM-dd')}`);
+  };
+
+  return (
+    <div className="w-full h-full bg-secondary/20 rounded-2xl border border-glass-border p-6 shadow-xl backdrop-blur-md">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          Mi Calendario
+        </h2>
+        <div className="text-foreground/70">{format(new Date(), 'MMMM yyyy', { locale: es })}</div>
+      </div>
+      
+      <div className="grid grid-cols-7 gap-4">
+        {weekDays.map((day, i) => (
+          <div key={i} className="text-center font-semibold text-foreground/60 mb-2">
+            {format(day, 'EEEE', { locale: es })}
+          </div>
+        ))}
+        
+        {weekDays.map((day, i) => (
+          <div 
+            key={i} 
+            className="min-h-[120px] bg-background/50 border border-glass-border rounded-xl p-2 transition-colors hover:bg-background/80"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, day)}
+          >
+            <div className="text-right text-sm text-foreground/50 mb-2">
+              {format(day, 'd')}
+            </div>
+            
+            {events.filter(e => isSameDay(e.date, day)).map(ev => (
+              <div
+                key={ev.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, ev.id)}
+                className={`p-2 mb-2 rounded-lg text-sm cursor-grab active:cursor-grabbing text-white shadow-md transition-transform hover:scale-105 ${
+                  ev.type === 'examen' ? 'bg-accent' : 'bg-primary'
+                }`}
+              >
+                {ev.title}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
