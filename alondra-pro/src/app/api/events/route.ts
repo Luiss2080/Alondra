@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const events = await prisma.event.findMany({
       orderBy: {
-        date: 'asc',
+        startDate: 'asc',
       },
     });
     return NextResponse.json(events);
@@ -29,7 +29,8 @@ export async function POST(request: Request) {
     const event = await prisma.event.create({
       data: {
         title,
-        date: new Date(date),
+        startDate: new Date(date),
+        endDate: new Date(date), // Mismo día por defecto
         type,
         userId,
       },
@@ -53,7 +54,10 @@ export async function PUT(request: Request) {
 
     const updatedEvent = await prisma.event.update({
       where: { id },
-      data: { date: new Date(date) },
+      data: { 
+        startDate: new Date(date),
+        endDate: new Date(date) 
+      },
     });
 
     return NextResponse.json(updatedEvent);

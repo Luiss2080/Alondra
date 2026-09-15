@@ -22,10 +22,10 @@ export default function Calendar() {
     fetch('/api/events')
       .then(res => res.json())
       .then(data => {
-        // Ensure dates are parsed correctly
+        // Ensure dates are parsed correctly using startDate
         const parsedEvents = data.map((e: any) => ({
           ...e,
-          date: new Date(e.date)
+          date: new Date(e.startDate)
         }));
         setEvents(parsedEvents);
       })
