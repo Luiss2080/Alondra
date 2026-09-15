@@ -3,15 +3,38 @@
 import React, { useState } from 'react';
 import Calendar from '@/components/Calendar';
 import EventModal from '@/components/EventModal';
-import { Calendar as CalendarIcon, Brain, Bell, Settings, Plus, LogOut, Search, Activity, Zap, Star } from 'lucide-react';
+import { Calendar as CalendarIcon, Brain, Bell, Settings, Plus, LogOut, Search, Activity, Zap, Star, Sparkles, X } from 'lucide-react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showToast, setShowToast] = useState(true);
+
+  // Hide toast after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => setShowToast(false), 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen flex bg-background text-foreground overflow-hidden">
+      {/* Toast Notification (Welcome) */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, x: '-50%' }}
+            animate={{ opacity: 1, y: 20, x: '-50%' }}
+            exit={{ opacity: 0, y: -50, x: '-50%' }}
+            className="fixed top-0 left-1/2 z-50 bg-accent/20 backdrop-blur-md border border-accent/50 text-foreground px-6 py-3 rounded-full shadow-lg flex items-center gap-3"
+          >
+            <Sparkles className="text-accent" size={18} />
+            <span className="text-sm font-semibold">¡Bienvenido de nuevo! Tus datos están sincronizados.</span>
+            <button onClick={() => setShowToast(false)} className="ml-2 hover:text-accent"><X size={14} /></button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Decorative background meshes */}
       <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-primary/20 rounded-full mix-blend-screen filter blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/20 rounded-full mix-blend-screen filter blur-[100px] pointer-events-none"></div>
