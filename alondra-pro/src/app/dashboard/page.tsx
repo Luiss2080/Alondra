@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Calendar from '@/components/Calendar';
 import EventModal from '@/components/EventModal';
 import { Calendar as CalendarIcon, Brain, Bell, Settings, Plus, LogOut, Search, Activity, Zap, Star, Sparkles, X } from 'lucide-react';
