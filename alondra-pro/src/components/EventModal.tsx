@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Calendar as CalendarIcon, Clock, Type, Save } from 'lucide-react';
 
@@ -10,6 +10,44 @@ interface EventModalProps {
 }
 
 export default function EventModal({ isOpen, onClose }: EventModalProps) {
+  const [title, setTitle] = useState('');
+  const [date, setDate] = useState('');
+  const [type, setType] = useState('tarea');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || !date) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          date,
+          type,
+          userId: 'mock-user-123', // Hardcoded until Auth is implemented
+        }),
+      });
+      
+      if (res.ok) {
+        // Reset and close on success
+        setTitle('');
+        setDate('');
+        setType('tarea');
+        onClose();
+        // Option: In a real app we'd dispatch an event or use SWR/React Query to refresh the calendar
+        window.location.reload(); 
+      }
+    } catch (error) {
+      console.error('Error guardando el evento', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -40,12 +78,15 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
               Nuevo Evento
             </h2>
 
-            <form className="flex flex-col gap-5">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div>
                 <label className="block text-sm font-medium text-foreground/80 mb-1">Título del Evento</label>
                 <input 
                   type="text" 
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                   placeholder="Ej. Examen Final de Física"
+                  required
                   className="w-full bg-background/50 border border-glass-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                 />
               </div>
@@ -57,12 +98,15 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
                   </label>
                   <input 
                     type="date" 
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    required
                     className="w-full bg-background/50 border border-glass-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground/80 mb-1 flex items-center gap-1">
-                    <Clock size={14} /> Hora
+                    <Clock size={14} /> Hora (opcional)
                   </label>
                   <input 
                     type="time" 
@@ -75,7 +119,11 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
                 <label className="block text-sm font-medium text-foreground/80 mb-1 flex items-center gap-1">
                   <Type size={14} /> Tipo de Evento
                 </label>
-                <select className="w-full bg-background/50 border border-glass-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none">
+                <select 
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  className="w-full bg-background/50 border border-glass-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+                >
                   <option value="tarea">Tarea (Índigo)</option>
                   <option value="examen">Examen (Violeta)</option>
                   <option value="estudio">Bloque de Estudio IA (Verde)</option>
@@ -85,12 +133,12 @@ export default function EventModal({ isOpen, onClose }: EventModalProps) {
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                type="button"
-                onClick={onClose}
-                className="mt-4 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl px-4 py-3 shadow-lg flex items-center justify-center gap-2 transition-colors"
+                type="submit"
+                disabled={loading}
+                className={`mt-4 w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl px-4 py-3 shadow-lg flex items-center justify-center gap-2 transition-colors ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
                 <Save size={18} />
-                Guardar Evento
+                {loading ? 'Guardando...' : 'Guardar Evento'}
               </motion.button>
             </form>
           </motion.div>
