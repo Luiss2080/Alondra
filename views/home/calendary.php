@@ -111,6 +111,13 @@ if (!$usuario) {
 let currentDate = new Date();
 let eventos = [];
 
+// Token CSRF publicado en <meta name="csrf-token"> por
+// views/layouts/header.php; la API lo exige en la cabecera
+// X-CSRF-Token para POST/PUT/DELETE (ver config/csrf.php).
+function getCsrfToken() {
+    return document.querySelector('meta[name="csrf-token"]')?.content || '';
+}
+
 // Inicializar el calendario
 document.addEventListener('DOMContentLoaded', function() {
     inicializarCalendario();
@@ -324,6 +331,7 @@ async function crearEvento(eventoData) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-Token': getCsrfToken()
             },
             body: JSON.stringify(eventoData)
         });
