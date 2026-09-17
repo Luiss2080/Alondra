@@ -1,4 +1,12 @@
 // Calendar functionality
+
+// Token CSRF publicado en <meta name="csrf-token"> por
+// views/layouts/header.php; la API lo exige en la cabecera
+// X-CSRF-Token para POST/PUT/DELETE (ver config/csrf.php).
+function getCsrfToken() {
+  return document.querySelector('meta[name="csrf-token"]')?.content || "";
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize calendar
   initializeCalendar();
@@ -480,6 +488,7 @@ async function submitEventForm(form) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": getCsrfToken(),
       },
       body: JSON.stringify(eventData),
     });

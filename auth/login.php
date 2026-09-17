@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php
+session_start();
+require __DIR__ . '/../config/csrf.php';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -252,6 +255,7 @@
         <?php endif; ?>
 
         <form action="../controllers/login_process.php" method="post">
+            <?php echo csrf_field(); ?>
             <div class="form-group">
                 <label for="email" class="form-label">Correo electrónico</label>
                 <input type="email" id="email" name="email" class="form-input" placeholder="admin@alondra.edu" required>

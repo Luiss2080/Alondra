@@ -305,6 +305,13 @@ $user_id = $_SESSION['user_id'];
     </div>
 
     <script>
+        // Token CSRF publicado en <meta name="csrf-token"> por
+        // views/layouts/header.php; la API lo exige en la cabecera
+        // X-CSRF-Token para POST/PUT/DELETE (ver config/csrf.php).
+        function getCsrfToken() {
+            return document.querySelector('meta[name="csrf-token"]')?.content || '';
+        }
+
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             initializeEventForm();
@@ -348,7 +355,10 @@ $user_id = $_SESSION['user_id'];
             try {
                 const response = await fetch('../../api/initialize_categories.php', {
                     method: 'POST',
-                    credentials: 'same-origin'
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-CSRF-Token': getCsrfToken()
+                    }
                 });
                 
                 const result = await response.json();
@@ -388,6 +398,7 @@ $user_id = $_SESSION['user_id'];
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'X-CSRF-Token': getCsrfToken()
                         },
                         body: JSON.stringify(categoria)
                     });
@@ -448,6 +459,7 @@ $user_id = $_SESSION['user_id'];
                     credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRF-Token': getCsrfToken()
                     },
                     body: JSON.stringify(eventData)
                 });
@@ -492,6 +504,7 @@ $user_id = $_SESSION['user_id'];
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRF-Token': getCsrfToken()
                     },
                     body: JSON.stringify(categoryData)
                 });
