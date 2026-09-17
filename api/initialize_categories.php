@@ -9,6 +9,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once __DIR__ . '/../config/csrf.php';
+
 // Headers
 header('Content-Type: application/json; charset=utf-8');
 
@@ -16,6 +18,15 @@ header('Content-Type: application/json; charset=utf-8');
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(['success' => false, 'error' => 'Usuario no autenticado']);
+    exit;
+}
+
+// Este endpoint crea datos (categorías por defecto), así que exige el
+// mismo token CSRF que el resto de la API para métodos mutantes.
+$csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
+if (!csrf_verify($csrfToken)) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Token CSRF inválido o ausente']);
     exit;
 }
 

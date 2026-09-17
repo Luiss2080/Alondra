@@ -24,8 +24,12 @@ CREATE TABLE IF NOT EXISTS eventos (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Tabla de eventos del calendario';
 
 -- Crear índices para optimizar consultas
-CREATE INDEX IF NOT EXISTS idx_eventos_usuario ON eventos(usuario_id);
-CREATE INDEX IF NOT EXISTS idx_eventos_fecha ON eventos(fecha_inicio);
-CREATE INDEX IF NOT EXISTS idx_eventos_categoria ON eventos(categoria_id);
-CREATE INDEX IF NOT EXISTS idx_eventos_activo ON eventos(activo);
-CREATE INDEX IF NOT EXISTS idx_eventos_usuario_fecha ON eventos(usuario_id, fecha_inicio);
+-- Nota: MySQL (a diferencia de MariaDB) no soporta la cláusula
+-- "IF NOT EXISTS" en CREATE INDEX; como esta es una migración nueva
+-- que se ejecuta una sola vez sobre una tabla recién creada, se omite
+-- para que el script funcione igual en MySQL y MariaDB.
+CREATE INDEX idx_eventos_usuario ON eventos(usuario_id);
+CREATE INDEX idx_eventos_fecha ON eventos(fecha_inicio);
+CREATE INDEX idx_eventos_categoria ON eventos(categoria_id);
+CREATE INDEX idx_eventos_activo ON eventos(activo);
+CREATE INDEX idx_eventos_usuario_fecha ON eventos(usuario_id, fecha_inicio);

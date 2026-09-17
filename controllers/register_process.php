@@ -2,12 +2,19 @@
 // Controlador para procesar registro de usuarios
 session_start();
 require_once __DIR__ . '/../app/Validation/PasswordPolicy.php';
+require __DIR__ . '/../config/csrf.php';
 
 use App\Validation\PasswordPolicy;
 
 $pdo = require __DIR__ . '/../config/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_verify($_POST['csrf_token'] ?? null)) {
+        $_SESSION['error'] = 'Tu sesión expiró o la solicitud no es válida. Intenta de nuevo.';
+        header('Location: ../auth/register.php');
+        exit;
+    }
+
     $nombre = trim($_POST['nombre'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';

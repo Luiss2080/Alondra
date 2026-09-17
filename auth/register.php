@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php
+session_start();
+require __DIR__ . '/../config/csrf.php';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -252,6 +255,7 @@
         <?php endif; ?>
 
         <form action="../controllers/register_process.php" method="post">
+            <?php echo csrf_field(); ?>
             <div class="form-group">
                 <label for="nombre" class="form-label">Nombre completo</label>
                 <input type="text" id="nombre" name="nombre" class="form-input" placeholder="Tu nombre completo" required>

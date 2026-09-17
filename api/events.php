@@ -13,12 +13,14 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once __DIR__ . '/../config/csrf.php';
+
 // Headers solo si no se han enviado ya
+// Nota: esta API se consume únicamente desde el propio frontend de
+// Alondra (fetch same-origin con cookies de sesión), así que no
+// necesita ni debe exponer un CORS abierto con "*".
 if (!headers_sent()) {
     header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-    header('Access-Control-Allow-Headers: Content-Type');
 }
 
 // Verificar autenticación
@@ -28,11 +30,24 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$method = $_SERVER['REQUEST_METHOD'];
+
+// Los métodos que modifican datos deben venir con el token CSRF de la
+// sesión (enviado por el frontend en la cabecera X-CSRF-Token, ver
+// views/layouts/header.php y el JavaScript que llama a esta API).
+if (in_array($method, ['POST', 'PUT', 'DELETE'], true)) {
+    $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
+    if (!csrf_verify($csrfToken)) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'error' => 'Token CSRF inválido o ausente']);
+        exit;
+    }
+}
+
 // Incluir conexión a base de datos
 $pdo = include_once __DIR__ . '/../config/conexion.php';
 
 $usuario_id = $_SESSION['user_id'];
-$method = $_SERVER['REQUEST_METHOD'];
 
 try {
     switch ($method) {

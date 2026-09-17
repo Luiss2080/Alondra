@@ -1,4 +1,29 @@
 // Calendar functionality
+
+// Token CSRF publicado en <meta name="csrf-token"> por
+// views/layouts/header.php; la API lo exige en la cabecera
+// X-CSRF-Token para POST/PUT/DELETE (ver config/csrf.php).
+function getCsrfToken() {
+  return document.querySelector('meta[name="csrf-token"]')?.content || "";
+}
+
+// Escapa texto antes de insertarlo como HTML. Los eventos y categorías
+// vienen de datos guardados por el propio usuario, así que nunca deben
+// insertarse tal cual en innerHTML (evita XSS almacenado si un título,
+// descripción o nombre de categoría contiene HTML/JS).
+function escapeHtml(value) {
+  const div = document.createElement("div");
+  div.textContent = value ?? "";
+  return div.innerHTML;
+}
+
+// Solo acepta colores hexadecimales (#rgb o #rrggbb); cualquier otro
+// valor se reemplaza por un color por defecto en vez de insertarse
+// directamente en un atributo/propiedad de estilo.
+function safeColor(value, fallback = "#6a3bd6") {
+  return /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(value ?? "") ? value : fallback;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize calendar
   initializeCalendar();
@@ -275,9 +300,9 @@ function createEventElement(evento) {
 
   let eventText = "";
   if (evento.hora_display) {
-    eventText += `<span class="event-time">${evento.hora_display}</span> `;
+    eventText += `<span class="event-time">${escapeHtml(evento.hora_display)}</span> `;
   }
-  eventText += `<i class="${evento.icono}"></i> ${evento.titulo}`;
+  eventText += `<i class="${escapeHtml(evento.icono)}"></i> ${escapeHtml(evento.titulo)}`;
 
   eventElement.innerHTML = eventText;
   eventElement.title = `${evento.titulo}${
@@ -480,6 +505,7 @@ async function submitEventForm(form) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": getCsrfToken(),
       },
       body: JSON.stringify(eventData),
     });
