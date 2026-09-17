@@ -4,6 +4,10 @@
  * Maneja todas las operaciones CRUD de eventos y obtención de datos para el calendario
  */
 
+require_once __DIR__ . '/../app/Calendar/EventValidator.php';
+
+use App\Calendar\EventValidator;
+
 // Iniciar sesión solo si no está activa
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -145,11 +149,18 @@ try {
             $hora_fin = $input['hora_fin'] ?? null;
             $tipo = $input['tipo'] ?? 'evento';
             $categoria_id = !empty($input['categoria_id']) ? $input['categoria_id'] : null;
-            
-            if (empty($titulo) || empty($fecha_inicio)) {
-                throw new Exception('Título y fecha son obligatorios');
+
+            $errores = EventValidator::validate([
+                'titulo' => $titulo,
+                'fecha_inicio' => $fecha_inicio,
+                'hora_inicio' => $hora_inicio,
+                'hora_fin' => $hora_fin,
+                'tipo' => $tipo,
+            ]);
+            if (!empty($errores)) {
+                throw new Exception(implode(' ', $errores));
             }
-            
+
             // Obtener color de la categoría si existe
             $color = '#6a3bd6'; // Color por defecto
             if ($categoria_id) {
@@ -160,7 +171,7 @@ try {
                     $color = $categoria['color'];
                 }
             }
-            
+
             $stmt = $pdo->prepare("
                 INSERT INTO eventos (usuario_id, titulo, descripcion, fecha_inicio, hora_inicio, hora_fin, tipo, categoria_id, color)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -201,7 +212,18 @@ try {
             $hora_fin = $input['hora_fin'] ?? null;
             $tipo = $input['tipo'] ?? 'evento';
             $categoria_id = !empty($input['categoria_id']) ? $input['categoria_id'] : null;
-            
+
+            $errores = EventValidator::validate([
+                'titulo' => $titulo,
+                'fecha_inicio' => $fecha_inicio,
+                'hora_inicio' => $hora_inicio,
+                'hora_fin' => $hora_fin,
+                'tipo' => $tipo,
+            ]);
+            if (!empty($errores)) {
+                throw new Exception(implode(' ', $errores));
+            }
+
             // Obtener color de la categoría si existe
             $color = '#6a3bd6'; // Color por defecto
             if ($categoria_id) {
@@ -212,10 +234,10 @@ try {
                     $color = $categoria['color'];
                 }
             }
-            
+
             $stmt = $pdo->prepare("
-                UPDATE eventos 
-                SET titulo = ?, descripcion = ?, fecha_inicio = ?, hora_inicio = ?, hora_fin = ?, 
+                UPDATE eventos
+                SET titulo = ?, descripcion = ?, fecha_inicio = ?, hora_inicio = ?, hora_fin = ?,
                     tipo = ?, categoria_id = ?, color = ?, actualizado_en = NOW()
                 WHERE id = ? AND usuario_id = ?
             ");
