@@ -312,6 +312,24 @@ $user_id = $_SESSION['user_id'];
             return document.querySelector('meta[name="csrf-token"]')?.content || '';
         }
 
+        // Escapa texto antes de insertarlo como HTML. Los eventos y
+        // categorías vienen de datos guardados por el propio usuario, así
+        // que nunca deben inyectarse tal cual en innerHTML (evita XSS
+        // almacenado si un título, descripción o nombre de categoría
+        // contiene HTML/JS).
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value ?? '';
+            return div.innerHTML;
+        }
+
+        // Solo acepta colores hexadecimales (#rgb o #rrggbb); cualquier
+        // otro valor se reemplaza por un color por defecto en vez de
+        // insertarse directamente en un atributo style.
+        function safeColor(value, fallback = '#6a3bd6') {
+            return /^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(value ?? '') ? value : fallback;
+        }
+
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             initializeEventForm();
@@ -569,8 +587,8 @@ $user_id = $_SESSION['user_id'];
                         option.className = 'custom-option';
                         option.onclick = () => selectCategory(category.id, category.nombre, category.color);
                         option.innerHTML = `
-                            <span class="category-color-dot" style="background: ${category.color};"></span>
-                            <span class="category-name">${category.nombre}</span>
+                            <span class="category-color-dot" style="background: ${safeColor(category.color)};"></span>
+                            <span class="category-name">${escapeHtml(category.nombre)}</span>
                         `;
                         categoryOptionsContainer.appendChild(option);
                         console.log('Categoría agregada:', category.nombre);
@@ -631,8 +649,8 @@ $user_id = $_SESSION['user_id'];
             
             // Update display
             selectedOption.innerHTML = `
-                <span class="category-color-dot" style="background: ${color};"></span>
-                <span class="category-name">${name}</span>
+                <span class="category-color-dot" style="background: ${safeColor(color)};"></span>
+                <span class="category-name">${escapeHtml(name)}</span>
                 <i class="fas fa-chevron-down dropdown-arrow"></i>
             `;
             
@@ -782,14 +800,14 @@ $user_id = $_SESSION['user_id'];
                         return `
                             <div class="event-item">
                                 <div class="event-time">
-                                    <span class="time">${event.hora_inicio || '00:00'}</span>
-                                    <span class="date">${fechaStr}</span>
+                                    <span class="time">${escapeHtml(event.hora_inicio || '00:00')}</span>
+                                    <span class="date">${escapeHtml(fechaStr)}</span>
                                 </div>
                                 <div class="event-details">
-                                    <h4 class="event-title">${event.titulo}</h4>
-                                    <p class="event-description">${event.descripcion || 'Sin descripción'}</p>
+                                    <h4 class="event-title">${escapeHtml(event.titulo)}</h4>
+                                    <p class="event-description">${escapeHtml(event.descripcion || 'Sin descripción')}</p>
                                 </div>
-                                <div class="event-status" style="background-color: ${event.categoria_color || '#667eea'}"></div>
+                                <div class="event-status" style="background-color: ${safeColor(event.categoria_color, '#667eea')}"></div>
                             </div>
                         `;
                     }).join('');

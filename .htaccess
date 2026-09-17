@@ -1,0 +1,9 @@
+# Páginas de error personalizadas: evitan que Apache muestre sus
+# páginas por defecto (o, peor, un stack trace de PHP) a los usuarios.
+ErrorDocument 404 /Alondra/public/404.php
+ErrorDocument 500 /Alondra/public/500.php
+
+# No servir archivos sensibles si alguien intenta acceder directamente.
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
