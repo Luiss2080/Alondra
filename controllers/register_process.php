@@ -1,7 +1,11 @@
 <?php
 // Controlador para procesar registro de usuarios
 session_start();
+require_once __DIR__ . '/../app/Validation/PasswordPolicy.php';
 require __DIR__ . '/../config/csrf.php';
+
+use App\Validation\PasswordPolicy;
+
 $pdo = require __DIR__ . '/../config/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -24,6 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar email básico
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $_SESSION['error'] = 'Correo electrónico inválido.';
+        header('Location: ../auth/register.php');
+        exit;
+    }
+
+    // Antes solo se exigía que la contraseña no estuviera vacía
+    // (aceptaba "1" o "a"); password_hash() protege el almacenamiento
+    // pero no evita que el usuario elija una contraseña trivial.
+    if (!PasswordPolicy::isValid($password)) {
+        $_SESSION['error'] = PasswordPolicy::requirementsMessage();
         header('Location: ../auth/register.php');
         exit;
     }

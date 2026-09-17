@@ -269,9 +269,10 @@ require __DIR__ . '/../config/csrf.php';
             <div class="form-group">
                 <label for="password" class="form-label">Contraseña</label>
                 <div class="password-container">
-                    <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" minlength="8" pattern="(?=.*[A-Za-z])(?=.*\d).{8,}" title="Al menos 8 caracteres, con letras y números" required>
                     <i class="fas fa-eye password-toggle" onclick="togglePassword()"></i>
                 </div>
+                <small style="color: #6b7280; font-size: 12px;">Mínimo 8 caracteres, con letras y números.</small>
             </div>
 
             <button type="submit" class="login-btn">
