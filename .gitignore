@@ -1,0 +1,34 @@
+# Entorno y credenciales
+.env
+.env.*
+!.env.example
+
+# Dependencias (PHP / Composer)
+/vendor/
+
+# Dependencias (Node, usadas por alondra-pro)
+node_modules/
+
+# Volcados y respaldos de base de datos (pueden contener datos reales)
+database/backup/*.sql
+!database/backup/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# Archivos subidos por usuarios
+public/uploads/
+storage/
+
+# Editor / SO
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Cobertura y artefactos de test
+/coverage/
+.phpunit.cache/
+.phpunit.result.cache
