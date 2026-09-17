@@ -30,6 +30,17 @@ $pdo = include_once __DIR__ . '/../config/conexion.php';
 $usuario_id = $_SESSION['user_id'];
 $method = $_SERVER['REQUEST_METHOD'];
 
+/**
+ * Valida que el color sea un hexadecimal (#rgb o #rrggbb). Se guarda tal
+ * cual en varias vistas (algunas históricamente lo insertaban sin escapar
+ * en atributos style), así que se rechaza aquí cualquier valor que no
+ * tenga esta forma en vez de confiar en la validación del navegador.
+ */
+function es_color_hex_valido(string $color): bool
+{
+    return (bool) preg_match('/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/', $color);
+}
+
 try {
     switch ($method) {
         case 'GET':
@@ -80,18 +91,22 @@ try {
             $nombre = trim($input['nombre'] ?? '');
             $color = $input['color'] ?? '#6a3bd6';
             $descripcion = trim($input['descripcion'] ?? '');
-            
+
             if (empty($nombre)) {
                 throw new Exception('El nombre de la categoría es obligatorio');
             }
-            
+
+            if (!es_color_hex_valido($color)) {
+                throw new Exception('El color debe ser un valor hexadecimal (ej: #6a3bd6)');
+            }
+
             // Verificar si ya existe una categoría con el mismo nombre para este usuario
             $stmt = $pdo->prepare("SELECT id FROM categorias WHERE usuario_id = ? AND nombre = ? AND activo = 1");
             $stmt->execute([$usuario_id, $nombre]);
             if ($stmt->fetch()) {
                 throw new Exception('Ya existe una categoría con ese nombre');
             }
-            
+
             // Crear la categoría
             $stmt = $pdo->prepare("
                 INSERT INTO categorias (usuario_id, nombre, color, descripcion)
@@ -123,7 +138,11 @@ try {
             if (empty($nombre)) {
                 throw new Exception('El nombre de la categoría es obligatorio');
             }
-            
+
+            if (!es_color_hex_valido($color)) {
+                throw new Exception('El color debe ser un valor hexadecimal (ej: #6a3bd6)');
+            }
+
             // Verificar que la categoría pertenece al usuario
             $stmt = $pdo->prepare("SELECT id FROM categorias WHERE id = ? AND usuario_id = ?");
             $stmt->execute([$id, $usuario_id]);
