@@ -12,6 +12,10 @@ interface EventType {
   userId: string;
 }
 
+interface ApiEvent extends Omit<EventType, 'date'> {
+  startDate: string;
+}
+
 export default function Calendar() {
   const [events, setEvents] = useState<EventType[]>([]);
   const startDate = startOfWeek(new Date(), { weekStartsOn: 1 });
@@ -23,7 +27,7 @@ export default function Calendar() {
       .then(res => res.json())
       .then(data => {
         // Ensure dates are parsed correctly using startDate
-        const parsedEvents = data.map((e: any) => ({
+        const parsedEvents = (data as ApiEvent[]).map((e) => ({
           ...e,
           date: new Date(e.startDate)
         }));
